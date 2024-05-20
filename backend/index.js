@@ -1,7 +1,7 @@
 import express from "express";
 import { PORT, mongoDBURL } from "./config.js";
 import mongoose from 'mongoose';
-import { Book } from  './models/books.js';
+import { Book } from './models/books.js';
 
 const app = express();
 
@@ -17,7 +17,7 @@ app.get('/', (request, response) => {
 // route to save a new book
 app.post('/books', async (request, response) => {
     try {
-        if(
+        if (
             !request.body.title ||
             !request.body.author ||
             !request.body.publishYear
@@ -26,8 +26,8 @@ app.post('/books', async (request, response) => {
                 message: 'Send all required fields: title, author, publishYear',
             });
         }
-        const newBook = { 
-            title: request.body.title, 
+        const newBook = {
+            title: request.body.title,
             author: request.body.author,
             publishYear: request.body.publishYear,
         };
@@ -35,10 +35,10 @@ app.post('/books', async (request, response) => {
         const book = await Book.create(newBook);
 
         return response.status(201).send(book);
-        
-    } catch (error){
+
+    } catch (error) {
         console.log(error.message);
-        response.status(500).send({message: error.message});
+        response.status(500).send({ message: error.message });
     }
 });
 
@@ -50,13 +50,33 @@ app.get('/books', async (request, response) => {
         const books = await Book.find({});
 
         // Send the response
-      return response.status(200).json({ count: books.length, data: books });
+        return response.status(200).json({ count: books.length, data: books });
 
     } catch (error) {
         console.log('Error fetching books:', error.message);
         response.status(500).json({ error: error.message });
     }
 });
+
+
+
+// Route for get One Books from database
+app.get('/books/:id', async (request, response) => {
+    try {
+
+        const { id } = request.params;
+        // Fetch the specific book by Id
+        const book = await Book.findById(id);
+
+        // Send the response
+        return response.status(200).json(book);
+
+    } catch (error) {
+        console.log('Error fetching books:', error.message);
+        response.status(500).json({ error: error.message });
+    }
+});
+
 
 
 
