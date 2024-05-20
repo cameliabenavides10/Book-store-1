@@ -46,20 +46,19 @@ app.post('/books', async (request, response) => {
 // Route for get All Books from database
 app.get('/books', async (request, response) => {
     try {
+        // Fetch all books from the database
         const books = await Book.find({});
-        console.log('Books fetched:', books); // Debugging log
 
-        return response.status(200).json({
-            count: books.length,
-            data: books
-        });
-
+        // Send the response
+      return response.status(200).json({ count: books.length, data: books });
 
     } catch (error) {
-        console.log(error.message);
-        response.status(500).send({ message: error.message });
+        console.log('Error fetching books:', error.message);
+        response.status(500).json({ error: error.message });
     }
 });
+
+
 
 
 
